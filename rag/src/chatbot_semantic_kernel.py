@@ -1,11 +1,9 @@
 """
 Chatbot with context and memory, using Semantic Kernel.
 """
-import asyncio
 import os
 
 import semantic_kernel as sk
-from chatbot_base import AbstractChatbot
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from semantic_kernel.semantic_functions.chat_prompt_template import ChatPromptTemplate
 from semantic_kernel.semantic_functions.prompt_template_config import (
@@ -34,7 +32,7 @@ USER = "user"
 ASSISTANT = "assistant"
 
 
-class Chatbot(AbstractChatbot):
+class Chatbot:
     """Chat with an LLM. Keeps chat history in memory."""
 
     kernel = None
@@ -123,15 +121,15 @@ class Chatbot(AbstractChatbot):
         self.variables = sk.ContextVariables()
         self.variables["chat_history"] = ""
 
-    def ask(self, context_list: list[str], question: str) -> str:
+    async def ask(self, context_list: list[str], question: str) -> str:
         """
         Queries the LLM including relevant context from our own data.
         """
         self.variables["question"] = question
         context = "\n\n".join(context_list)
         self.variables["context"] = context
-        response = asyncio.run(
-            self.kernel.run_async(self.chat_function, input_vars=self.variables)
+        response = await self.kernel.run_async(
+            self.chat_function, input_vars=self.variables
         )
         self.variables[
             "chat_history"

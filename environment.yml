@@ -15,8 +15,6 @@ dependencies:
     - python-dotenv
     - azure-identity
     - tiktoken
-    - docarray
-    - azure-storage-blob
     - semantic_kernel
     - --pre
     - azure-search-documents 

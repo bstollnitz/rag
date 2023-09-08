@@ -4,7 +4,6 @@ Chatbot with context and memory.
 import os
 
 import openai
-from chatbot_base import AbstractChatbot
 
 # Config for Azure OpenAI.
 
@@ -30,7 +29,7 @@ USER = "user"
 ASSISTANT = "assistant"
 
 
-class Chatbot(AbstractChatbot):
+class Chatbot:
     """Chat with an LLM. Keeps chat history in memory."""
 
     chat_history = None

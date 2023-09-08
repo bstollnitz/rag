@@ -76,7 +76,7 @@ async def delete(memory_store: AzureCognitiveSearchMemoryStore):
     await memory_store.delete_collection_async(AZURE_SEARCH_INDEX_NAME)
 
 
-def main():
+async def main():
     load_dotenv()
 
     memory_store = AzureCognitiveSearchMemoryStore(
@@ -85,9 +85,9 @@ def main():
         admin_key=AZURE_SEARCH_KEY,
     )
 
-    asyncio.run(initialize(memory_store))
-    # asyncio.run(delete(memory_store))
+    await initialize(memory_store)
+    # await delete(memory_store)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

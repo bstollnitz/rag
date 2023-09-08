@@ -3,7 +3,6 @@ Chatbot with context and memory, using LangChain.
 """
 import os
 
-from chatbot_base import AbstractChatbot
 from langchain.chains.question_answering import load_qa_chain
 from langchain.chat_models import AzureChatOpenAI
 from langchain.memory import ConversationBufferMemory
@@ -29,7 +28,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_CHATGPT_DEPLOYMENT = "chatgpt-deployment"
 
 
-class Chatbot(AbstractChatbot):
+class Chatbot:
     """Chat with an LLM using LangChain. Keeps chat history in memory."""
 
     chain = None

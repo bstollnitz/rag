@@ -40,7 +40,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_DEPLOYMENT = "embedding-deployment"
 
 
-def get_context(query: str) -> list[str]:
+async def get_context(query: str) -> list[str]:
     """
     Gets the relevant documents from Azure Cognitive Search.
     """
@@ -63,32 +63,30 @@ def get_context(query: str) -> list[str]:
         )
     )
 
-    docs = asyncio.run(
-        kernel.memory.search_async(AZURE_SEARCH_INDEX_NAME, query, limit=1)
-    )
+    docs = await kernel.memory.search_async(AZURE_SEARCH_INDEX_NAME, query, limit=1)
     context = [doc.text for doc in docs]
 
     return context
 
 
-def ask_question(chat: Chatbot, question: str):
+async def ask_question(chat: Chatbot, question: str):
     """
     Get the context for the user's question, and ask the Chatbot that question.
     """
     log("QUESTION", question)
-    context_list = get_context(question)
-    response = chat.ask(context_list, question)
+    context_list = await get_context(question)
+    response = await chat.ask(context_list, question)
     log("RESPONSE", response)
 
 
-def main():
+async def main():
     load_dotenv()
 
     chat = Chatbot()
-    ask_question(chat, "Explain in one or two sentences how attention works.")
-    ask_question(chat, "Is it used by the GPT Transformer?")
-    ask_question(chat, "Explain how whales communicate.")
+    await ask_question(chat, "Explain in one or two sentences how attention works.")
+    await ask_question(chat, "Is it used by the GPT Transformer?")
+    await ask_question(chat, "Explain how whales communicate.")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
