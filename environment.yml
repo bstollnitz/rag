@@ -1,0 +1,24 @@
+name: rag
+channels:
+  - anaconda
+  - pytorch
+  - conda-forge
+dependencies:
+  - python==3.10.4
+  - pytorch==1.11.0
+  - pylint==2.12.2
+  - pip==21.3.1
+  - pip:
+    - unstructured[all-docs]
+    - langchain
+    - openai
+    - python-dotenv
+    - azure-identity
+    - tiktoken
+    - docarray
+    - azure-storage-blob
+    - semantic_kernel
+    - --pre
+    - azure-search-documents 
+
+
