@@ -15,28 +15,15 @@ from semantic_kernel.connectors.memory.azure_cognitive_search import (
 from utils import log
 
 # Config for Azure Search.
-
-# Go to https://portal.azure.com/, find your "Cognitive Search" resource,
-# and find the "Url".
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
-# On the same resource page, click on "Settings", then "Keys", then copy the
-# "Primary admin key".
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
-# The name of the index we'll create.
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-3"
 
-
 # Config for Azure OpenAI.
-
 OPENAI_API_TYPE = "azure"
-# Go to https://oai.azure.com/, "Chat Playground", "View code", and find
-# the API base in the code.
 OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-# In the same window, find the version in the code.
 OPENAI_API_VERSION = "2023-03-15-preview"
-# In the same window, copy the "Key" at the bottom.
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# Go to https://oai.azure.com/, "Deployments", and find the deployment name.
 OPENAI_EMBEDDING_DEPLOYMENT = "embedding-deployment"
 
 

@@ -14,16 +14,10 @@ from semantic_kernel.semantic_functions.semantic_function_config import (
 )
 
 # Config for Azure OpenAI.
-
 OPENAI_API_TYPE = "azure"
-# Go to https://oai.azure.com/, "Chat Playground", "View code", and find
-# the API base in the code.
 OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-# In the same window, find the version in the code.
 OPENAI_API_VERSION = "2023-03-15-preview"
-# In the same window, copy the "Key" at the bottom.
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# Go to https://oai.azure.com/, "Deployments", and find the deployment name.
 OPENAI_CHATGPT_DEPLOYMENT = "chatgpt-deployment"
 
 # Chat roles

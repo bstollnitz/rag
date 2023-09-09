@@ -6,22 +6,11 @@ import os
 import openai
 
 # Config for Azure OpenAI.
-
 OPENAI_API_TYPE = "azure"
-# Go to https://oai.azure.com/, "Chat Playground", "View code", and find
-# the API base in the code.
 OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-# In the same window, find the version in the code.
 OPENAI_API_VERSION = "2023-03-15-preview"
-# In the same window, copy the "Key" at the bottom.
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-# Go to https://oai.azure.com/, "Deployments", and find the deployment name.
 OPENAI_CHATGPT_DEPLOYMENT = "chatgpt-deployment"
-
-openai.api_type = OPENAI_API_TYPE
-openai.api_base = OPENAI_API_BASE
-openai.api_version = OPENAI_API_VERSION
-openai.api_key = OPENAI_API_KEY
 
 # Chat roles
 SYSTEM = "system"
@@ -35,6 +24,11 @@ class Chatbot:
     chat_history = None
 
     def __init__(self):
+        openai.api_type = OPENAI_API_TYPE
+        openai.api_base = OPENAI_API_BASE
+        openai.api_version = OPENAI_API_VERSION
+        openai.api_key = OPENAI_API_KEY
+
         system_message = (
             "You're an assistant helping users learn about GPT models.\n"
             "Please answer the user's question using only information you can find in "

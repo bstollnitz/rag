@@ -10,13 +10,8 @@ from langchain.retrievers.azure_cognitive_search import AzureCognitiveSearchRetr
 from utils import log
 
 # Config for Azure Search.
-
-# On the same resource page, click on "Settings", then "Keys", then copy the
-# "Primary admin key".
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
-# This is the name of the "Cognitive Search" resource in the portal.
 AZURE_SEARCH_SERVICE_NAME = os.getenv("AZURE_SEARCH_SERVICE_NAME")
-# This is the name of the index we created earlier.
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-2"
 
 
