@@ -16,6 +16,7 @@ This project shows how to create a Chatbot that can converse with your own data 
     - **AZURE_SEARCH_KEY** - On the same resource page, click on "Settings", then "Keys", then copy the "Primary admin key".
     - **AZURE_SEARCH_SERVICE_NAME** - This is the name of the "Cognitive Search" resource in the portal.
 
+
 ## Install packages
 
 Install the packages specified in the environment.yml file:
@@ -24,6 +25,7 @@ Install the packages specified in the environment.yml file:
 conda env create -f environment.yml
 conda activate rag
 ```
+
 
 ## How to run
 
