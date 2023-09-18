@@ -23,7 +23,7 @@ OPENAI_API_TYPE = "azure"
 OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
 OPENAI_API_VERSION = "2023-03-15-preview"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_EMBEDDING_DEPLOYMENT = "embedding-deployment"
+OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT")
 
 
 def log(title: str, content: str) -> str:
