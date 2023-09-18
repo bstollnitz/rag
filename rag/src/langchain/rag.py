@@ -4,15 +4,21 @@ Uses LangChain.
 """
 import os
 
-from chatbot_langchain import Chatbot
+from chatbot import Chatbot
 from dotenv import load_dotenv
 from langchain.retrievers.azure_cognitive_search import AzureCognitiveSearchRetriever
-from utils import log
 
 # Config for Azure Search.
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
 AZURE_SEARCH_SERVICE_NAME = os.getenv("AZURE_SEARCH_SERVICE_NAME")
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-2"
+
+
+def log(title: str, content: str) -> str:
+    """
+    Prints a title and content to the console.
+    """
+    print(f"*****\n{title.upper()}:\n{content}\n*****\n")
 
 
 def get_context(query: str) -> list[str]:

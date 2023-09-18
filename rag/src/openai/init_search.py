@@ -5,6 +5,7 @@ and semantic ranking.
 To run this code, you must already have a "Cognitive Search" and an "OpenAI"
 resource created in Azure.
 """
+import ntpath
 import os
 
 import openai
@@ -26,7 +27,8 @@ from azure.search.documents.indexes.models import (
     VectorSearch,
 )
 from dotenv import load_dotenv
-from utils import load_and_split_documents
+from langchain.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
+from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
@@ -39,6 +41,38 @@ OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
 OPENAI_API_VERSION = "2023-03-15-preview"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_DEPLOYMENT = "embedding-deployment"
+
+DATA_DIR = "rag/data/"
+
+
+def load_and_split_documents() -> list[dict]:
+    """
+    Load our documents from disc and split them into chunks.
+    Returns a list of dictionaries.
+    """
+    # Load our data.
+    loader = DirectoryLoader(
+        DATA_DIR, loader_cls=UnstructuredMarkdownLoader, show_progress=True
+    )
+    docs = loader.load()
+
+    # Split our documents.
+    splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.MARKDOWN, chunk_size=6000, chunk_overlap=100
+    )
+    split_docs = splitter.split_documents(docs)
+
+    # Convert our LangChain Documents to a list of dictionaries.
+    final_docs = []
+    for i, doc in enumerate(split_docs):
+        doc_dict = {
+            "Id": str(i),
+            "Content": doc.page_content,
+            "Filename": ntpath.basename(doc.metadata["source"]),
+        }
+        final_docs.append(doc_dict)
+
+    return final_docs
 
 
 def get_index(name: str) -> SearchIndex:

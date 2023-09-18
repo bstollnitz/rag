@@ -6,15 +6,17 @@ To run this code, you must already have a "Cognitive Search" and an "OpenAI"
 resource created in Azure.
 """
 import asyncio
+import ntpath
 import os
 
 import semantic_kernel as sk
 from dotenv import load_dotenv
+from langchain.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
+from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 from semantic_kernel.connectors.ai.open_ai import OpenAITextEmbedding
 from semantic_kernel.connectors.memory.azure_cognitive_search import (
     AzureCognitiveSearchMemoryStore,
 )
-from utils import load_and_split_documents
 
 # Config for Azure OpenAI.
 OPENAI_API_TYPE = "azure"
@@ -27,6 +29,39 @@ OPENAI_EMBEDDING_DEPLOYMENT = "embedding-deployment"
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-3"
+
+
+DATA_DIR = "rag/data/"
+
+
+def load_and_split_documents() -> list[dict]:
+    """
+    Load our documents from disc and split them into chunks.
+    Returns a list of dictionaries.
+    """
+    # Load our data.
+    loader = DirectoryLoader(
+        DATA_DIR, loader_cls=UnstructuredMarkdownLoader, show_progress=True
+    )
+    docs = loader.load()
+
+    # Split our documents.
+    splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.MARKDOWN, chunk_size=6000, chunk_overlap=100
+    )
+    split_docs = splitter.split_documents(docs)
+
+    # Convert our LangChain Documents to a list of dictionaries.
+    final_docs = []
+    for i, doc in enumerate(split_docs):
+        doc_dict = {
+            "Id": str(i),
+            "Content": doc.page_content,
+            "Filename": ntpath.basename(doc.metadata["source"]),
+        }
+        final_docs.append(doc_dict)
+
+    return final_docs
 
 
 async def initialize(memory_store: AzureCognitiveSearchMemoryStore):

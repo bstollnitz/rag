@@ -10,7 +10,6 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import Vector
 from chatbot import Chatbot
 from dotenv import load_dotenv
-from utils import log
 
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
@@ -23,6 +22,13 @@ OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
 OPENAI_API_VERSION = "2023-03-15-preview"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_DEPLOYMENT = "embedding-deployment"
+
+
+def log(title: str, content: str) -> str:
+    """
+    Prints a title and content to the console.
+    """
+    print(f"*****\n{title.upper()}:\n{content}\n*****\n")
 
 
 def get_context(question: str) -> str:

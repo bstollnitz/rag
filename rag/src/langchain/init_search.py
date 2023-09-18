@@ -9,9 +9,11 @@ import os
 
 import openai
 from dotenv import load_dotenv
+from langchain.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 from langchain.vectorstores.azuresearch import AzureSearch
-from utils import load_and_split_documents_langchain
+from langchain.vectorstores.utils import Document
 
 # Config for Azure OpenAI.
 OPENAI_API_TYPE = "azure"
@@ -25,13 +27,35 @@ AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-2"
 
+DATA_DIR = "rag/data/"
+
+
+def load_and_split_documents() -> list[Document]:
+    """
+    Load our documents from disc and split them into chunks.
+    Returns a list of LancChain Documents.
+    """
+    # Load our data.
+    loader = DirectoryLoader(
+        DATA_DIR, loader_cls=UnstructuredMarkdownLoader, show_progress=True
+    )
+    docs = loader.load()
+
+    # Split our documents.
+    splitter = RecursiveCharacterTextSplitter.from_language(
+        language=Language.MARKDOWN, chunk_size=6000, chunk_overlap=100
+    )
+    split_docs = splitter.split_documents(docs)
+
+    return split_docs
+
 
 def initialize():
     """
     Initializes an Azure Cognitive Search index with our custom data.
     """
     # Load our data.
-    docs = load_and_split_documents_langchain()
+    docs = load_and_split_documents()
 
     # Create an Azure Cognitive Search index.
     embeddings_parameters = {"engine": OPENAI_EMBEDDING_DEPLOYMENT}

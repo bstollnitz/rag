@@ -6,13 +6,12 @@ import asyncio
 import os
 
 import semantic_kernel as sk
-from chatbot_semantic_kernel import Chatbot
+from chatbot import Chatbot
 from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import OpenAITextEmbedding
 from semantic_kernel.connectors.memory.azure_cognitive_search import (
     AzureCognitiveSearchMemoryStore,
 )
-from utils import log
 
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
@@ -25,6 +24,13 @@ OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
 OPENAI_API_VERSION = "2023-03-15-preview"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_DEPLOYMENT = "embedding-deployment"
+
+
+def log(title: str, content: str) -> str:
+    """
+    Prints a title and content to the console.
+    """
+    print(f"*****\n{title.upper()}:\n{content}\n*****\n")
 
 
 async def get_context(query: str) -> list[str]:
