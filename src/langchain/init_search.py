@@ -31,7 +31,7 @@ DATA_DIR = "data/"
 
 def load_and_split_documents() -> list[Document]:
     """
-    Load our documents from disc and split them into chunks.
+    Loads our documents from disc and split them into chunks.
     Returns a list of LancChain Documents.
     """
     # Load our data.

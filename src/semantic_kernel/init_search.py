@@ -36,7 +36,7 @@ DATA_DIR = "data/"
 
 def load_and_split_documents() -> list[dict]:
     """
-    Load our documents from disc and split them into chunks.
+    Loads our documents from disc and split them into chunks.
     Returns a list of dictionaries.
     """
     # Load our data.
