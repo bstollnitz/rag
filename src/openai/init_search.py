@@ -42,7 +42,7 @@ OPENAI_API_VERSION = "2023-03-15-preview"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT")
 
-DATA_DIR = "rag/data/"
+DATA_DIR = "data/"
 
 
 def load_and_split_documents() -> list[dict]:

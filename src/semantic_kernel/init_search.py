@@ -31,7 +31,7 @@ AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-3"
 
 
-DATA_DIR = "rag/data/"
+DATA_DIR = "data/"
 
 
 def load_and_split_documents() -> list[dict]:
