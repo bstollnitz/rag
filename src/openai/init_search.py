@@ -78,7 +78,7 @@ def get_index(name: str) -> SearchIndex:
     """
     Returns an Azure Cognitive Search index with the given name.
     """
-    # The fields we want to index. The "Embedding" field is a vector field that will
+    # The fields we want to index. The "embedding" field is a vector field that will
     # be used for vector search.
     fields = [
         SimpleField(name="id", type=SearchFieldDataType.String, key=True),
@@ -93,7 +93,7 @@ def get_index(name: str) -> SearchIndex:
         ),
     ]
 
-    # The "Content" field should be prioritized for semantic ranking.
+    # The "content" field should be prioritized for semantic ranking.
     semantic_settings = SemanticSettings(
         configurations=[
             SemanticConfiguration(
