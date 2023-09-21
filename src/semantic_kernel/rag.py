@@ -76,8 +76,8 @@ async def main():
     load_dotenv()
 
     chat = Chatbot()
-    await ask_question(chat, "Explain in one or two sentences how attention works.")
-    await ask_question(chat, "Is it used by the GPT Transformer?")
+    await ask_question(chat, "I need a large backpack. Which one do you recommend?")
+    await ask_question(chat, "How much does that backpack cost?")
     await ask_question(chat, "Explain how whales communicate.")
 
 

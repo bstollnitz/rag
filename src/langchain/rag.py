@@ -52,8 +52,8 @@ def main():
     load_dotenv()
 
     chat = Chatbot()
-    ask_question(chat, "Explain in one or two sentences how attention works.")
-    ask_question(chat, "Is it used by the GPT Transformer?")
+    ask_question(chat, "I need a large backpack. Which one do you recommend?")
+    ask_question(chat, "How much does that backpack cost?")
     ask_question(chat, "Explain how whales communicate.")
 
 

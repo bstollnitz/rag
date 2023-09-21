@@ -36,11 +36,12 @@ class Chatbot:
     def __init__(self):
         system_message = (
             f"{SYSTEM}:\n"
-            "You're an assistant helping users learn about GPT models.\n"
+            "You're a helpful assistant.\n"
             "Please answer the user's question using only information you can find in "
             "the chat history and context, which are enclosed by back ticks in the "
             "user prompt.\n"
-            "If the user's question is unrelated to GPT models, say you don't know.\n"
+            "If the user's question is unrelated to that information, "
+            "say you don't know.\n"
         )
 
         user_template = (
@@ -65,7 +66,7 @@ class Chatbot:
         # Creates a chat function.
         prompt_config_dict = {
             "type": "completion",
-            "description": "A chatbot that teaches users about GPT models.",
+            "description": "A chatbot that's a helpful assistant.",
             "completion": {
                 "temperature": 0.7,
                 "top_p": 0.5,

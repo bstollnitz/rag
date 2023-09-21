@@ -30,11 +30,12 @@ class Chatbot:
         openai.api_key = AZURE_OPENAI_API_KEY
 
         system_message = (
-            "You're an assistant helping users learn about GPT models.\n"
+            "You're a helpful assistant.\n"
             "Please answer the user's question using only information you can find in "
             "the chat history and context, which are enclosed by back ticks in the "
             "user prompt.\n"
-            "If the user's question is unrelated to GPT models, say you don't know.\n"
+            "If the user's question is unrelated to that information, "
+            "say you don't know.\n"
         )
 
         self.chat_history = [{"role": SYSTEM, "content": system_message}]
@@ -58,11 +59,6 @@ class Chatbot:
             n=1,
         )
         response = chat_completion.choices[0].message.content
-        # No need to keep the context for every question in the history.
-        self.chat_history[-1] = {
-            "role": USER,
-            "content": f"Here's my question: ```{question}```\n",
-        }
         self.chat_history.append({"role": ASSISTANT, "content": response})
 
         return response

@@ -65,9 +65,9 @@ def load_and_split_documents() -> list[dict]:
     final_docs = []
     for i, doc in enumerate(split_docs):
         doc_dict = {
-            "Id": str(i),
-            "Content": doc.page_content,
-            "Filename": os.path.basename(doc.metadata["source"]),
+            "id": str(i),
+            "content": doc.page_content,
+            "sourcefile": os.path.basename(doc.metadata["source"]),
         }
         final_docs.append(doc_dict)
 
@@ -81,11 +81,11 @@ def get_index(name: str) -> SearchIndex:
     # The fields we want to index. The "Embedding" field is a vector field that will
     # be used for vector search.
     fields = [
-        SimpleField(name="Id", type=SearchFieldDataType.String, key=True),
-        SimpleField(name="Filename", type=SearchFieldDataType.String),
-        SearchableField(name="Content", type=SearchFieldDataType.String),
+        SimpleField(name="id", type=SearchFieldDataType.String, key=True),
+        SimpleField(name="sourcefile", type=SearchFieldDataType.String),
+        SearchableField(name="content", type=SearchFieldDataType.String),
         SearchField(
-            name="Embedding",
+            name="embedding",
             type=SearchFieldDataType.Collection(SearchFieldDataType.Single),
             # Size of the vector created by the text-embedding-ada-002 model.
             vector_search_dimensions=1536,
@@ -100,7 +100,7 @@ def get_index(name: str) -> SearchIndex:
                 name="default",
                 prioritized_fields=PrioritizedFields(
                     title_field=None,
-                    prioritized_content_fields=[SemanticField(field_name="Content")],
+                    prioritized_content_fields=[SemanticField(field_name="content")],
                 ),
             )
         ]
@@ -138,8 +138,8 @@ def initialize(search_index_client: SearchIndexClient):
     # Load our data.
     docs = load_and_split_documents()
     for doc in docs:
-        doc["Embedding"] = openai.Embedding.create(
-            engine=AZURE_OPENAI_EMBEDDING_DEPLOYMENT, input=doc["Content"]
+        doc["embedding"] = openai.Embedding.create(
+            engine=AZURE_OPENAI_EMBEDDING_DEPLOYMENT, input=doc["content"]
         )["data"][0]["embedding"]
 
     # Create an Azure Cognitive Search index.

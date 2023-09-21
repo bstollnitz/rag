@@ -55,9 +55,9 @@ def load_and_split_documents() -> list[dict]:
     final_docs = []
     for i, doc in enumerate(split_docs):
         doc_dict = {
-            "Id": str(i),
-            "Content": doc.page_content,
-            "Filename": ntpath.basename(doc.metadata["source"]),
+            "id": str(i),
+            "content": doc.page_content,
+            "sourcefile": ntpath.basename(doc.metadata["source"]),
         }
         final_docs.append(doc_dict)
 
@@ -88,7 +88,7 @@ async def initialize(memory_store: AzureCognitiveSearchMemoryStore):
     # Upload our data to the index.
     for doc in docs:
         await kernel.memory.save_information_async(
-            AZURE_SEARCH_INDEX_NAME, id=doc["Id"], text=doc["Content"]
+            AZURE_SEARCH_INDEX_NAME, id=doc["id"], text=doc["content"]
         )
 
 

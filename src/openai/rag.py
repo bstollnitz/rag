@@ -39,7 +39,7 @@ def get_context(question: str) -> str:
         value=openai.Embedding.create(
             engine=AZURE_OPENAI_EMBEDDING_DEPLOYMENT, input=question
         )["data"][0]["embedding"],
-        fields="Embedding",
+        fields="embedding",
     )
 
     search_client = SearchClient(
@@ -48,8 +48,8 @@ def get_context(question: str) -> str:
         credential=AzureKeyCredential(AZURE_SEARCH_KEY),
     )
 
-    docs = search_client.search(search_text="", vectors=[query_vector], top=1)
-    context = [doc["Content"] for doc in docs]
+    docs = search_client.search(search_text="", vectors=[query_vector], top=3)
+    context = [doc["content"] for doc in docs]
 
     return context
 
@@ -73,8 +73,8 @@ def main():
     openai.api_key = AZURE_OPENAI_API_KEY
 
     chat = Chatbot()
-    ask_question(chat, "Explain in one or two sentences how attention works.")
-    ask_question(chat, "Is it used by the GPT Transformer?")
+    ask_question(chat, "I need a large backpack. Which one do you recommend?")
+    ask_question(chat, "How much does that backpack cost?")
     ask_question(chat, "Explain how whales communicate.")
 
 

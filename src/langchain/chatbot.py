@@ -29,11 +29,12 @@ class Chatbot:
 
     def __init__(self):
         system_message = (
-            "You're an assistant helping users learn about GPT models.\n"
+            "You're a helpful assistant.\n"
             "Please answer the user's question using only information you can find in "
             "the chat history and context, which are enclosed by back ticks in the "
             "user prompt.\n"
-            "If the user's question is unrelated to GPT models, say you don't know.\n"
+            "If the user's question is unrelated to that information, "
+            "say you don't know.\n"
         )
 
         user_template = (
