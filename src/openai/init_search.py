@@ -5,7 +5,6 @@ and semantic ranking.
 To run this code, you must already have a "Cognitive Search" and an "OpenAI"
 resource created in Azure.
 """
-import ntpath
 import os
 
 import openai
@@ -36,18 +35,18 @@ AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-1"
 
 # Config for Azure OpenAI.
-OPENAI_API_TYPE = "azure"
-OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-OPENAI_API_VERSION = "2023-03-15-preview"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT")
+AZURE_OPENAI_API_TYPE = "azure"
+AZURE_OPENAI_API_BASE = os.getenv("AZURE_OPENAI_API_BASE")
+AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
 
 DATA_DIR = "data/"
 
 
 def load_and_split_documents() -> list[dict]:
     """
-    Load our documents from disc and split them into chunks.
+    Loads our documents from disc and split them into chunks.
     Returns a list of dictionaries.
     """
     # Load our data.
@@ -68,7 +67,7 @@ def load_and_split_documents() -> list[dict]:
         doc_dict = {
             "Id": str(i),
             "Content": doc.page_content,
-            "Filename": ntpath.basename(doc.metadata["source"]),
+            "Filename": os.path.basename(doc.metadata["source"]),
         }
         final_docs.append(doc_dict)
 
@@ -115,7 +114,7 @@ def get_index(name: str) -> SearchIndex:
             HnswVectorSearchAlgorithmConfiguration(
                 name="default",
                 kind="hnsw",
-                hnsw_parameters=HnswParameters(metric="cosine"),
+                parameters=HnswParameters(metric="cosine"),
             )
         ]
     )
@@ -140,7 +139,7 @@ def initialize(search_index_client: SearchIndexClient):
     docs = load_and_split_documents()
     for doc in docs:
         doc["Embedding"] = openai.Embedding.create(
-            engine=OPENAI_EMBEDDING_DEPLOYMENT, input=doc["Content"]
+            engine=AZURE_OPENAI_EMBEDDING_DEPLOYMENT, input=doc["Content"]
         )["data"][0]["embedding"]
 
     # Create an Azure Cognitive Search index.
@@ -166,10 +165,10 @@ def delete(search_index_client: SearchIndexClient):
 def main():
     load_dotenv()
 
-    openai.api_type = OPENAI_API_TYPE
-    openai.api_base = OPENAI_API_BASE
-    openai.api_version = OPENAI_API_VERSION
-    openai.api_key = OPENAI_API_KEY
+    openai.api_type = AZURE_OPENAI_API_TYPE
+    openai.api_base = AZURE_OPENAI_API_BASE
+    openai.api_version = AZURE_OPENAI_API_VERSION
+    openai.api_key = AZURE_OPENAI_API_KEY
 
     search_index_client = SearchIndexClient(
         AZURE_SEARCH_ENDPOINT, AzureKeyCredential(AZURE_SEARCH_KEY)

@@ -7,7 +7,6 @@ resource created in Azure.
 """
 import os
 
-import openai
 from dotenv import load_dotenv
 from langchain.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -16,11 +15,11 @@ from langchain.vectorstores.azuresearch import AzureSearch
 from langchain.vectorstores.utils import Document
 
 # Config for Azure OpenAI.
-OPENAI_API_TYPE = "azure"
-OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-OPENAI_API_VERSION = "2023-03-15-preview"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT")
+AZURE_OPENAI_API_TYPE = "azure"
+AZURE_OPENAI_API_BASE = os.getenv("AZURE_OPENAI_API_BASE")
+AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
 
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
@@ -58,8 +57,13 @@ def initialize():
     docs = load_and_split_documents()
 
     # Create an Azure Cognitive Search index.
-    embeddings_parameters = {"engine": OPENAI_EMBEDDING_DEPLOYMENT}
-    embeddings = OpenAIEmbeddings(model_kwargs=embeddings_parameters)
+    embeddings = OpenAIEmbeddings(
+        deployment=AZURE_OPENAI_EMBEDDING_DEPLOYMENT,
+        openai_api_base=AZURE_OPENAI_API_BASE,
+        openai_api_key=AZURE_OPENAI_API_KEY,
+        openai_api_version=AZURE_OPENAI_API_VERSION,
+        openai_api_type=AZURE_OPENAI_API_TYPE,
+    )
     vector_store = AzureSearch(
         azure_search_endpoint=AZURE_SEARCH_ENDPOINT,
         azure_search_key=AZURE_SEARCH_KEY,
@@ -73,11 +77,6 @@ def initialize():
 
 def main():
     load_dotenv()
-
-    openai.api_type = OPENAI_API_TYPE
-    openai.api_base = OPENAI_API_BASE
-    openai.api_version = OPENAI_API_VERSION
-    openai.api_key = OPENAI_API_KEY
 
     initialize()
 

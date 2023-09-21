@@ -14,11 +14,11 @@ from semantic_kernel.semantic_functions.semantic_function_config import (
 )
 
 # Config for Azure OpenAI.
-OPENAI_API_TYPE = "azure"
-OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-OPENAI_API_VERSION = "2023-03-15-preview"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_CHATGPT_DEPLOYMENT = os.getenv("OPENAI_CHATGPT_DEPLOYMENT")
+AZURE_OPENAI_API_TYPE = "azure"
+AZURE_OPENAI_API_BASE = os.getenv("AZURE_OPENAI_API_BASE")
+AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_CHATGPT_DEPLOYMENT = os.getenv("AZURE_OPENAI_CHATGPT_DEPLOYMENT")
 
 # Chat roles
 SYSTEM = "system"
@@ -56,9 +56,9 @@ class Chatbot:
         self.kernel.add_chat_service(
             "azureopenai",
             AzureChatCompletion(
-                deployment_name=OPENAI_CHATGPT_DEPLOYMENT,
-                endpoint=OPENAI_API_BASE,
-                api_key=OPENAI_API_KEY,
+                deployment_name=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
+                endpoint=AZURE_OPENAI_API_BASE,
+                api_key=AZURE_OPENAI_API_KEY,
             ),
         )
 

@@ -17,11 +17,11 @@ AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
 AZURE_SEARCH_INDEX_NAME = "blog-posts-index-1"
 
 # Config for Azure OpenAI.
-OPENAI_API_TYPE = "azure"
-OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-OPENAI_API_VERSION = "2023-03-15-preview"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT")
+AZURE_OPENAI_API_TYPE = "azure"
+AZURE_OPENAI_API_BASE = os.getenv("AZURE_OPENAI_API_BASE")
+AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
 
 
 def log(title: str, content: str) -> str:
@@ -37,7 +37,7 @@ def get_context(question: str) -> str:
     """
     query_vector = Vector(
         value=openai.Embedding.create(
-            engine=OPENAI_EMBEDDING_DEPLOYMENT, input=question
+            engine=AZURE_OPENAI_EMBEDDING_DEPLOYMENT, input=question
         )["data"][0]["embedding"],
         fields="Embedding",
     )
@@ -48,10 +48,7 @@ def get_context(question: str) -> str:
         credential=AzureKeyCredential(AZURE_SEARCH_KEY),
     )
 
-    docs = search_client.search(
-        search_text="",
-        vectors=[query_vector],
-    )
+    docs = search_client.search(search_text="", vectors=[query_vector], top=1)
     context = [doc["Content"] for doc in docs]
 
     return context
@@ -70,10 +67,10 @@ def ask_question(chat: Chatbot, question: str):
 def main():
     load_dotenv()
 
-    openai.api_type = OPENAI_API_TYPE
-    openai.api_base = OPENAI_API_BASE
-    openai.api_version = OPENAI_API_VERSION
-    openai.api_key = OPENAI_API_KEY
+    openai.api_type = AZURE_OPENAI_API_TYPE
+    openai.api_base = AZURE_OPENAI_API_BASE
+    openai.api_version = AZURE_OPENAI_API_VERSION
+    openai.api_key = AZURE_OPENAI_API_KEY
 
     chat = Chatbot()
     ask_question(chat, "Explain in one or two sentences how attention works.")

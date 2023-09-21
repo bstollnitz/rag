@@ -19,11 +19,11 @@ from semantic_kernel.connectors.memory.azure_cognitive_search import (
 )
 
 # Config for Azure OpenAI.
-OPENAI_API_TYPE = "azure"
-OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-OPENAI_API_VERSION = "2023-03-15-preview"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("OPENAI_EMBEDDING_DEPLOYMENT")
+AZURE_OPENAI_API_TYPE = "azure"
+AZURE_OPENAI_API_BASE = os.getenv("AZURE_OPENAI_API_BASE")
+AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
 
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
@@ -76,11 +76,11 @@ async def initialize(memory_store: AzureCognitiveSearchMemoryStore):
     kernel.add_text_embedding_generation_service(
         "openai-embedding",
         OpenAITextEmbedding(
-            model_id=OPENAI_EMBEDDING_DEPLOYMENT,
-            api_key=OPENAI_API_KEY,
-            endpoint=OPENAI_API_BASE,
-            api_type=OPENAI_API_TYPE,
-            api_version=OPENAI_API_VERSION,
+            model_id=AZURE_OPENAI_EMBEDDING_DEPLOYMENT,
+            api_key=AZURE_OPENAI_API_KEY,
+            endpoint=AZURE_OPENAI_API_BASE,
+            api_type=AZURE_OPENAI_API_TYPE,
+            api_version=AZURE_OPENAI_API_VERSION,
         ),
     )
     kernel.register_memory_store(memory_store)

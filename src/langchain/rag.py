@@ -29,7 +29,7 @@ def get_context(query: str) -> list[str]:
         api_key=AZURE_SEARCH_KEY,
         service_name=AZURE_SEARCH_SERVICE_NAME,
         index_name=AZURE_SEARCH_INDEX_NAME,
-        top_k=1,
+        top_k=3,
     )
 
     docs = retriever.get_relevant_documents(query)

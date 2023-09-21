@@ -6,11 +6,11 @@ import os
 import openai
 
 # Config for Azure OpenAI.
-OPENAI_API_TYPE = "azure"
-OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-OPENAI_API_VERSION = "2023-03-15-preview"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_CHATGPT_DEPLOYMENT = os.getenv("OPENAI_CHATGPT_DEPLOYMENT")
+AZURE_OPENAI_API_TYPE = "azure"
+AZURE_OPENAI_API_BASE = os.getenv("AZURE_OPENAI_API_BASE")
+AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_CHATGPT_DEPLOYMENT = os.getenv("AZURE_OPENAI_CHATGPT_DEPLOYMENT")
 
 # Chat roles
 SYSTEM = "system"
@@ -24,10 +24,10 @@ class Chatbot:
     chat_history = None
 
     def __init__(self):
-        openai.api_type = OPENAI_API_TYPE
-        openai.api_base = OPENAI_API_BASE
-        openai.api_version = OPENAI_API_VERSION
-        openai.api_key = OPENAI_API_KEY
+        openai.api_type = AZURE_OPENAI_API_TYPE
+        openai.api_base = AZURE_OPENAI_API_BASE
+        openai.api_version = AZURE_OPENAI_API_VERSION
+        openai.api_key = AZURE_OPENAI_API_KEY
 
         system_message = (
             "You're an assistant helping users learn about GPT models.\n"
@@ -51,7 +51,7 @@ class Chatbot:
         self.chat_history.append({"role": USER, "content": user_message})
 
         chat_completion = openai.ChatCompletion.create(
-            deployment_id=OPENAI_CHATGPT_DEPLOYMENT,
+            deployment_id=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
             messages=self.chat_history,
             temperature=0.7,
             max_tokens=1024,

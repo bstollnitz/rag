@@ -15,11 +15,11 @@ from langchain.prompts.chat import (
 from langchain.schema.document import Document
 
 # Config for Azure OpenAI.
-OPENAI_API_TYPE = "azure"
-OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
-OPENAI_API_VERSION = "2023-03-15-preview"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-OPENAI_CHATGPT_DEPLOYMENT = os.getenv("OPENAI_CHATGPT_DEPLOYMENT")
+AZURE_OPENAI_API_TYPE = "azure"
+AZURE_OPENAI_API_BASE = os.getenv("AZURE_OPENAI_API_BASE")
+AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
+AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
+AZURE_OPENAI_CHATGPT_DEPLOYMENT = os.getenv("AZURE_OPENAI_CHATGPT_DEPLOYMENT")
 
 
 class Chatbot:
@@ -53,11 +53,11 @@ class Chatbot:
 
         # Create an LLM.
         llm = AzureChatOpenAI(
-            deployment_name=OPENAI_CHATGPT_DEPLOYMENT,
-            openai_api_type=OPENAI_API_TYPE,
-            openai_api_base=OPENAI_API_BASE,
-            openai_api_version=OPENAI_API_VERSION,
-            openai_api_key=OPENAI_API_KEY,
+            deployment_name=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
+            openai_api_type=AZURE_OPENAI_API_TYPE,
+            openai_api_base=AZURE_OPENAI_API_BASE,
+            openai_api_version=AZURE_OPENAI_API_VERSION,
+            openai_api_key=AZURE_OPENAI_API_KEY,
             temperature=0.7,
         )
 
