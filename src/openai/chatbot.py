@@ -32,8 +32,7 @@ class Chatbot:
         system_message = (
             "You're a helpful assistant.\n"
             "Please answer the user's question using only information you can find in "
-            "the chat history and context, which are enclosed by back ticks in the "
-            "user prompt.\n"
+            "the chat history and context.\n"
             "If the user's question is unrelated to that information, "
             "say you don't know.\n"
         )

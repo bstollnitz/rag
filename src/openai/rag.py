@@ -31,7 +31,7 @@ def log(title: str, content: str) -> str:
     print(f"*****\n{title.upper()}:\n{content}\n*****\n")
 
 
-def get_context(question: str) -> str:
+def get_context(question: str) -> list[str]:
     """
     Gets the relevant documents from Azure Cognitive Search.
     """

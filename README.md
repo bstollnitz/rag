@@ -1,6 +1,6 @@
 ## Adding your own data to LLMs
 
-This project shows how to create a Chatbot that can converse with your own data using the RAG pattern with vector search. It shows 3 approaches to the problem: interacting directly with OpenAI APIs, using LangChain, and using Semantic Kernel. 
+This project shows how to create a Chatbot that extends ChatGPT with your own data, using the RAG pattern with vector search. It shows three approaches to the problem: interacting directly with OpenAI APIs, using LangChain, and using Semantic Kernel. 
 
 
 ## Pre-requisites

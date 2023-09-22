@@ -48,7 +48,7 @@ class Chatbot:
             f"{USER}:\n"
             "Here's the chat history: ```{{$chat_history}}```\n"
             "Here's the context: ```{{$context}}```\n"
-            "Here's the user's question: ```{{$question}}```\n"
+            "Here's the user's question: {{$question}}\n"
             f"{ASSISTANT}:\n"
         )
 

@@ -40,7 +40,7 @@ class Chatbot:
         user_template = (
             "Here's the chat history: ```{chat_history}```\n"
             "Here's the context: ```{context}```\n"
-            "Here's my question: ```{question}```\n"
+            "Here's my question: {question}\n"
         )
 
         # Create a chat prompt template.
