@@ -16,7 +16,7 @@ from semantic_kernel.connectors.memory.azure_cognitive_search import (
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
-AZURE_SEARCH_INDEX_NAME = "blog-posts-index-3"
+AZURE_SEARCH_INDEX_NAME = "products-index-3"
 
 # Config for Azure OpenAI.
 AZURE_OPENAI_API_TYPE = "azure"

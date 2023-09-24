@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
-AZURE_SEARCH_INDEX_NAME = "blog-posts-index-1"
+AZURE_SEARCH_INDEX_NAME = "products-index-1"
 
 # Config for Azure OpenAI.
 AZURE_OPENAI_API_TYPE = "azure"

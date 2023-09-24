@@ -11,7 +11,7 @@ from langchain.retrievers.azure_cognitive_search import AzureCognitiveSearchRetr
 # Config for Azure Search.
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
 AZURE_SEARCH_SERVICE_NAME = os.getenv("AZURE_SEARCH_SERVICE_NAME")
-AZURE_SEARCH_INDEX_NAME = "blog-posts-index-2"
+AZURE_SEARCH_INDEX_NAME = "products-index-2"
 
 
 def log(title: str, content: str) -> str:
