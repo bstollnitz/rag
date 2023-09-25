@@ -6,7 +6,7 @@ import asyncio
 import os
 
 import semantic_kernel as sk
-from chatbot import Chatbot
+from chatbot_3 import Chatbot
 from dotenv import load_dotenv
 from semantic_kernel.connectors.ai.open_ai import OpenAITextEmbedding
 from semantic_kernel.connectors.memory.azure_cognitive_search import (

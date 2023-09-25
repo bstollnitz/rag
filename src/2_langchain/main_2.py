@@ -4,7 +4,7 @@ Uses LangChain.
 """
 import os
 
-from chatbot import Chatbot
+from chatbot_2 import Chatbot
 from dotenv import load_dotenv
 from langchain.retrievers.azure_cognitive_search import AzureCognitiveSearchRetriever
 
