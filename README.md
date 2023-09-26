@@ -33,11 +33,11 @@ conda activate rag
 
 You can run the same scenario using one of three approaches:
 - You can call the OpenAI APIs directly:
-    - Run src/openai/init_search.py by opening the file and pressing F5. This initializes an Azure Cognitive Search index with our data.
-    - Run src/openai/rag.py. This runs a sequence of queries using our data.
+    - Run src/1_openai/init_search_1.py by opening the file and pressing F5. This initializes an Azure Cognitive Search index with our data.
+    - Run src/1_openai/main_1.py. This runs a sequence of queries using our data.
 - You can use the LangChain package:
-    - Run src/langchain/init_search.py.
-    - Run src/langchain/rag.py.
+    - Run src/2_langchain/init_search_2.py.
+    - Run src/2_langchain/main_2.py.
 - You can use the Semantic Kernel package:
-    - Run src/semantic_kernel/init_search.py.
-    - Run src/semantic_kernel/rag.py.
+    - Run src/3_semantic_kernel/init_search_3.py.
+    - Run src/3_semantic_kernel/main_3.py.
