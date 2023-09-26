@@ -40,9 +40,10 @@ class Chatbot:
         openai.api_version = AZURE_OPENAI_API_VERSION
         openai.api_key = AZURE_OPENAI_API_KEY
 
-    def _summarize_chat_history_and_query(self, query: str) -> str:
+    def _summarize_user_intent(self, query: str) -> str:
         """
-        Creates a user message by summarizing the chat history and user query.
+        Creates a user message containing the user intent, by summarizing the chat
+        history and user query.
         """
         chat_history = ""
         for entry in self.chat_history_list:
@@ -127,7 +128,7 @@ class Chatbot:
         """
         Queries an LLM using RAG.
         """
-        user_intent = self._summarize_chat_history_and_query(query)
+        user_intent = self._summarize_user_intent(query)
         context_list = self._get_context(user_intent)
         response = self._rag(context_list, query)
         print(
