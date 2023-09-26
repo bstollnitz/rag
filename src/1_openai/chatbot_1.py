@@ -3,11 +3,11 @@ Chatbot with context and memory.
 """
 import os
 
+from dotenv import load_dotenv
+import openai
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import Vector
-
-import openai
 
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
@@ -34,6 +34,7 @@ class Chatbot:
     chat_history_list = []
 
     def __init__(self):
+        load_dotenv()
         openai.api_type = AZURE_OPENAI_API_TYPE
         openai.api_base = AZURE_OPENAI_API_BASE
         openai.api_version = AZURE_OPENAI_API_VERSION
