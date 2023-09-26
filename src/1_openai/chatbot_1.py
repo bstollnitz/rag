@@ -90,7 +90,7 @@ class Chatbot:
 
         return context_list
 
-    def _rag(self, context_list: list[str], user_intent: str) -> str:
+    def _rag(self, context_list: list[str], query: str) -> str:
         """
         Asks the LLM to answer the user's query with the context provided.
         """
@@ -106,8 +106,9 @@ class Chatbot:
                 f"Context: ```{context}```\n"
             ),
         }
-        user_intent_message = {"role": USER, "content": user_intent}
-        rag_messages = [system_message, user_intent_message]
+        user_message = {"role": USER, "content": query}
+        self.chat_history_list.append(user_message)
+        rag_messages = [system_message] + self.chat_history_list
 
         chat_completion = openai.ChatCompletion.create(
             deployment_id=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
@@ -117,14 +118,10 @@ class Chatbot:
             n=1,
         )
         response = chat_completion.choices[0].message.content
+        assistant_message = {"role": ASSISTANT, "content": response}
+        self.chat_history_list.append(assistant_message)
 
         return response
-
-    def _update_chat_history(self, query: str, response: str) -> None:
-        user_message = {"role": USER, "content": query}
-        assistant_message = {"role": ASSISTANT, "content": response}
-        self.chat_history_list.append(user_message)
-        self.chat_history_list.append(assistant_message)
 
     def ask(self, query: str) -> str:
         """
@@ -132,8 +129,7 @@ class Chatbot:
         """
         user_intent = self._summarize_chat_history_and_query(query)
         context_list = self._get_context(user_intent)
-        response = self._rag(context_list, user_intent)
-        self._update_chat_history(query, response)
+        response = self._rag(context_list, query)
         print(
             "*****\n"
             f"QUESTION:\n{query}\n"
