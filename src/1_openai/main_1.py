@@ -1,6 +1,5 @@
 """
-Bring your own data to an OpenAI LLM using Azure Cognitive Search with vector search
-and semantic ranking.
+Entry point for the chatbot.
 """
 from chatbot_1 import Chatbot
 

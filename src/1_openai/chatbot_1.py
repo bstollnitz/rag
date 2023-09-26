@@ -3,11 +3,11 @@ Chatbot with context and memory.
 """
 import os
 
-from dotenv import load_dotenv
 import openai
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import Vector
+from dotenv import load_dotenv
 
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")

@@ -1,6 +1,5 @@
 """
-Bring your own data to an OpenAI LLM using Azure Cognitive Search with vector search.
-Uses LangChain.
+Entry point for the chatbot.
 """
 import os
 
