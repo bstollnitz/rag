@@ -31,7 +31,7 @@ ASSISTANT = "assistant"
 class Chatbot:
     """Chat with an LLM using RAG. Keeps chat history in memory."""
 
-    chat_history_list = []
+    chat_history = []
 
     def __init__(self):
         load_dotenv()
@@ -45,22 +45,24 @@ class Chatbot:
         Creates a user message containing the user intent, by summarizing the chat
         history and user query.
         """
-        chat_history = ""
-        for entry in self.chat_history_list:
-            chat_history += f"{entry['role']}: {entry['content']}\n"
-        user_intent_message = {
-            "role": USER,
-            "content": (
-                "You're an AI assistant reading the transcript of a conversation "
-                "between a user and an assistant. Given the chat history and user's "
-                "query, infer user real intent."
-                f"Chat history: ```{chat_history}```\n"
-                f"User's query: ```{query}```\n"
-            ),
-        }
+        chat_history_str = ""
+        for entry in self.chat_history:
+            chat_history_str += f"{entry['role']}: {entry['content']}\n"
+        messages = [
+            {
+                "role": SYSTEM,
+                "content": (
+                    "You're an AI assistant reading the transcript of a conversation "
+                    "between a user and an assistant. Given the chat history and user's "
+                    "query, infer user real intent."
+                    f"Chat history: ```{chat_history_str}```\n"
+                    f"User's query: ```{query}```\n"
+                ),
+            }
+        ]
         chat_intent_completion = openai.ChatCompletion.create(
             deployment_id=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
-            messages=[user_intent_message],
+            messages=messages,
             temperature=0.7,
             max_tokens=1024,
             n=1,
@@ -96,31 +98,34 @@ class Chatbot:
         Asks the LLM to answer the user's query with the context provided.
         """
         context = "\n\n".join(context_list)
-        system_message = {
-            "role": SYSTEM,
-            "content": (
-                "You're a helpful assistant.\n"
-                "Please answer the user's question using only information you can find "
-                "in the context.\n"
-                "If the user's question is unrelated to the information in the "
-                "context, say you don't know.\n"
-                f"Context: ```{context}```\n"
-            ),
-        }
+        messages = [
+            {
+                "role": SYSTEM,
+                "content": (
+                    "You're a helpful assistant.\n"
+                    "Please answer the user's question using only information you can "
+                    "find in the context.\n"
+                    "If the user's question is unrelated to the information in the "
+                    "context, say you don't know.\n"
+                    f"Context: ```{context}```\n"
+                ),
+            }
+        ]
         user_message = {"role": USER, "content": query}
-        self.chat_history_list.append(user_message)
-        rag_messages = [system_message] + self.chat_history_list
+        self.chat_history.append(user_message)
+        messages = messages + self.chat_history
 
         chat_completion = openai.ChatCompletion.create(
             deployment_id=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
-            messages=rag_messages,
+            messages=messages,
             temperature=0.7,
             max_tokens=1024,
             n=1,
         )
+
         response = chat_completion.choices[0].message.content
         assistant_message = {"role": ASSISTANT, "content": response}
-        self.chat_history_list.append(assistant_message)
+        self.chat_history.append(assistant_message)
 
         return response
 
