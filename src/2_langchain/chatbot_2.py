@@ -131,3 +131,5 @@ class Chatbot:
             f"RESPONSE:\n{response}\n"
             "*****\n"
         )
+
+        return response
