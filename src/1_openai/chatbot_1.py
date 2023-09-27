@@ -53,8 +53,8 @@ class Chatbot:
                 "role": SYSTEM,
                 "content": (
                     "You're an AI assistant reading the transcript of a conversation "
-                    "between a user and an assistant. Given the chat history and user's "
-                    "query, infer user real intent."
+                    "between a user and an assistant. Given the chat history and "
+                    "user's query, infer user real intent."
                     f"Chat history: ```{chat_history_str}```\n"
                     f"User's query: ```{query}```\n"
                 ),
