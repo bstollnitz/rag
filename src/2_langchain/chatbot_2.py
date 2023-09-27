@@ -3,16 +3,12 @@ Chatbot with context and memory, using LangChain.
 """
 import os
 
-from langchain.chains.question_answering import load_qa_chain
+from dotenv import load_dotenv
+from langchain.chains import LLMChain
 from langchain.chat_models import AzureChatOpenAI
-from langchain.memory import ConversationBufferMemory
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    MessagesPlaceholder,
-    SystemMessage,
-)
-from langchain.schema.document import Document
+from langchain.memory import ChatMessageHistory
+from langchain.prompts.chat import ChatPromptTemplate, SystemMessagePromptTemplate
+from langchain.retrievers.azure_cognitive_search import AzureCognitiveSearchRetriever
 
 # Config for Azure OpenAI.
 AZURE_OPENAI_API_TYPE = "azure"
@@ -21,38 +17,25 @@ AZURE_OPENAI_API_VERSION = "2023-03-15-preview"
 AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
 AZURE_OPENAI_CHATGPT_DEPLOYMENT = os.getenv("AZURE_OPENAI_CHATGPT_DEPLOYMENT")
 
+# Config for Azure Search.
+AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
+AZURE_SEARCH_SERVICE_NAME = os.getenv("AZURE_SEARCH_SERVICE_NAME")
+AZURE_SEARCH_INDEX_NAME = "products-index-2"
+
 
 class Chatbot:
     """Chat with an LLM using LangChain. Keeps chat history in memory."""
 
-    chain = None
+    history = ChatMessageHistory()
 
     def __init__(self):
-        system_message = (
-            "You're a helpful assistant.\n"
-            "Please answer the user's question using only information you can find in "
-            "the chat history and context, which are enclosed by back ticks in the "
-            "user prompt.\n"
-            "If the user's question is unrelated to that information, "
-            "say you don't know.\n"
-        )
+        load_dotenv()
 
-        user_template = (
-            "Here's the chat history: ```{chat_history}```\n"
-            "Here's the context: ```{context}```\n"
-            "Here's my question: {question}\n"
-        )
-
-        # Create a chat prompt template.
-        chat_template = ChatPromptTemplate(
-            messages=[
-                SystemMessage(content=system_message),
-                MessagesPlaceholder(variable_name="chat_history"),
-                HumanMessagePromptTemplate.from_template(user_template),
-            ]
-        )
-
-        # Create an LLM.
+    def _summarize_user_intent(self, query: str) -> str:
+        """
+        Creates a user message containing the user intent, by summarizing the chat
+        history and user query.
+        """
         llm = AzureChatOpenAI(
             deployment_name=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
             openai_api_type=AZURE_OPENAI_API_TYPE,
@@ -62,21 +45,89 @@ class Chatbot:
             temperature=0.7,
         )
 
-        # Create the memory for our chat history.
-        memory = ConversationBufferMemory(
-            memory_key="chat_history", input_key="question", return_messages=True
+        chat_history_str = ""
+        for entry in self.history.messages:
+            chat_history_str += entry.type + ": " + entry.content + "\n "
+        system_template = (
+            "You're an AI assistant reading the transcript of a conversation "
+            "between a user and an assistant. Given the chat history and "
+            "user's query, infer user real intent."
+            "Chat history: ```{chat_history_str}```\n"
+            "User's query: ```{query}```\n"
+        )
+        chat_template = ChatPromptTemplate(
+            messages=[SystemMessagePromptTemplate.from_template(system_template)]
         )
 
-        # Create an LLM chain.
-        self.chain = load_qa_chain(llm=llm, prompt=chat_template, memory=memory)
+        llm_chain = LLMChain(llm=llm, prompt=chat_template)
+        user_intent = llm_chain({"chat_history_str": chat_history_str, "query": query})[
+            "text"
+        ]
 
-    def ask(self, context_list: list[str], question: str) -> str:
+        return user_intent
+
+    def _get_context(self, user_intent: str) -> list[str]:
         """
-        Queries the LLM including relevant context from our own data.
+        Gets the relevant documents from Azure Cognitive Search.
         """
-        input_documents = [Document(page_content=context) for context in context_list]
-        response = self.chain(
-            {"question": question, "input_documents": input_documents}
+        retriever = AzureCognitiveSearchRetriever(
+            api_key=AZURE_SEARCH_KEY,
+            service_name=AZURE_SEARCH_SERVICE_NAME,
+            index_name=AZURE_SEARCH_INDEX_NAME,
+            top_k=3,
         )
 
-        return response["output_text"]
+        docs = retriever.get_relevant_documents(user_intent)
+        context = [doc.page_content for doc in docs]
+
+        return context
+
+    def _rag(self, context_list: list[str], query: str) -> str:
+        """
+        Asks the LLM to answer the user's query with the context provided.
+        """
+        self.history.add_user_message(query)
+
+        llm = AzureChatOpenAI(
+            deployment_name=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
+            openai_api_type=AZURE_OPENAI_API_TYPE,
+            openai_api_base=AZURE_OPENAI_API_BASE,
+            openai_api_version=AZURE_OPENAI_API_VERSION,
+            openai_api_key=AZURE_OPENAI_API_KEY,
+            temperature=0.7,
+        )
+
+        context = "\n\n".join(context_list)
+        system_template = (
+            "You're a helpful assistant.\n"
+            "Please answer the user's question using only information you can "
+            "find in the context.\n"
+            "If the user's question is unrelated to the information in the "
+            "context, say you don't know.\n"
+            "Context: ```{context}```\n"
+        )
+        chat_template = ChatPromptTemplate(
+            messages=[SystemMessagePromptTemplate.from_template(system_template)]
+            + self.history.messages
+        )
+
+        llm_chain = LLMChain(llm=llm, prompt=chat_template)
+        response = llm_chain({"context": context})["text"]
+        self.history.add_ai_message(response)
+
+        return response
+
+    def ask(self, query: str) -> str:
+        """
+        Queries an LLM using RAG.
+        """
+        user_intent = self._summarize_user_intent(query)
+        context_list = self._get_context(user_intent)
+        response = self._rag(context_list, query)
+        print(
+            "*****\n"
+            f"QUESTION:\n{query}\n"
+            f"USER INTENT:\n{user_intent}\n"
+            f"RESPONSE:\n{response}\n"
+            "*****\n"
+        )
