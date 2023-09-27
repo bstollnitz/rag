@@ -97,6 +97,9 @@ class Chatbot:
         """
         Asks the LLM to answer the user's query with the context provided.
         """
+        user_message = {"role": USER, "content": query}
+        self.chat_history.append(user_message)
+
         context = "\n\n".join(context_list)
         messages = [
             {
@@ -111,8 +114,6 @@ class Chatbot:
                 ),
             }
         ]
-        user_message = {"role": USER, "content": query}
-        self.chat_history.append(user_message)
         messages = messages + self.chat_history
 
         chat_completion = openai.ChatCompletion.create(
