@@ -4,11 +4,13 @@ Chatbot with context and memory.
 import os
 
 import openai
+from openai import AzureOpenAI
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import Vector
 from dotenv import load_dotenv
 
+load_dotenv()
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
@@ -26,6 +28,12 @@ AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT
 SYSTEM = "system"
 USER = "user"
 ASSISTANT = "assistant"
+
+CLIENT = AzureOpenAI(
+    api_key = os.getenv("AZURE_OPENAI_API_KEY"),  
+    api_version = "2024-02-01",
+    azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
+    )
 
 
 class Chatbot:
@@ -60,8 +68,8 @@ class Chatbot:
                 ),
             }
         ]
-        chat_intent_completion = openai.ChatCompletion.create(
-            deployment_id=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
+        chat_intent_completion = CLIENT.chat.completions.create(
+            model=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
             messages=messages,
             temperature=0.7,
             max_tokens=1024,
@@ -76,9 +84,9 @@ class Chatbot:
         Gets the relevant documents from Azure Cognitive Search.
         """
         query_vector = Vector(
-            value=openai.Embedding.create(
-                engine=AZURE_OPENAI_EMBEDDING_DEPLOYMENT, input=user_intent
-            )["data"][0]["embedding"],
+            value=CLIENT.embeddings.create(
+                input=user_intent, model=AZURE_OPENAI_EMBEDDING_DEPLOYMENT
+            ).data[0].embedding,
             fields="embedding",
         )
 
@@ -116,8 +124,8 @@ class Chatbot:
         ]
         messages = messages + self.chat_history
 
-        chat_completion = openai.ChatCompletion.create(
-            deployment_id=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
+        chat_completion = CLIENT.chat.completions.create(
+            model=AZURE_OPENAI_CHATGPT_DEPLOYMENT,
             messages=messages,
             temperature=0.7,
             max_tokens=1024,
