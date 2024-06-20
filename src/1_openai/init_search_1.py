@@ -7,7 +7,9 @@ resource created in Azure.
 """
 import os
 
+from tqdm import tqdm
 import openai
+from openai import AzureOpenAI
 from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
@@ -29,6 +31,7 @@ from dotenv import load_dotenv
 from langchain.document_loaders import DirectoryLoader, UnstructuredMarkdownLoader
 from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
 
+load_dotenv()
 # Config for Azure Search.
 AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT")
 AZURE_SEARCH_KEY = os.getenv("AZURE_SEARCH_KEY")
@@ -42,6 +45,12 @@ AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
 AZURE_OPENAI_EMBEDDING_DEPLOYMENT = os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
 
 DATA_DIR = "data/"
+
+CLIENT = AzureOpenAI(
+        api_key = os.getenv("AZURE_OPENAI_API_KEY"),  
+        api_version = "2024-02-01",
+        azure_endpoint =os.getenv("AZURE_OPENAI_ENDPOINT") 
+        )
 
 
 def load_and_split_documents() -> list[dict]:
@@ -137,10 +146,10 @@ def initialize(search_index_client: SearchIndexClient):
     """
     # Load our data.
     docs = load_and_split_documents()
-    for doc in docs:
-        doc["embedding"] = openai.Embedding.create(
-            engine=AZURE_OPENAI_EMBEDDING_DEPLOYMENT, input=doc["content"]
-        )["data"][0]["embedding"]
+    for doc in tqdm(docs):
+        doc["embedding"] = CLIENT.embeddings.create(
+            input=doc["content"], model=os.getenv("AZURE_OPENAI_EMBEDDING_DEPLOYMENT")
+        ).data[0].embedding
 
     # Create an Azure Cognitive Search index.
     index = get_index(AZURE_SEARCH_INDEX_NAME)
