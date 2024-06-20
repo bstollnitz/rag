@@ -3,6 +3,10 @@
 This project shows how to create a Chatbot that extends ChatGPT with your own data, using the RAG pattern with vector search. It shows three approaches to the problem: interacting directly with OpenAI APIs, using LangChain, and using Semantic Kernel. 
 
 
+| Update: If you want to run this project with a more recent version of OpenAI's API, see the changes in [this pull request](https://github.com/bstollnitz/rag/pull/2).<br/> Thanks to [@xcvil](https://github.com/xcvil) for contributing these changes! |
+|------|
+
+
 ## Pre-requisites
 - You need to have an Azure subscription. You can get a [free subscription](https://azure.microsoft.com/en-us/free) to try it out.
 - Create a "Cognitive Search" resource on Azure.
@@ -41,3 +45,4 @@ You can run the same scenario using one of three approaches:
 - You can use the Semantic Kernel package:
     - Run src/3_semantic_kernel/init_search_3.py.
     - Run src/3_semantic_kernel/main_3.py.
+
